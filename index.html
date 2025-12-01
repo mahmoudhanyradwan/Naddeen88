@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NADINE – FINAL HEART 3D</title>
+
+<!-- Romantic Arabic Font -->
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  background: radial-gradient(circle, #2b0000, #000000);
+  font-family: "Amiri", serif;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Intro cinematic */
+#intro {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 55px;
+  letter-spacing: 8px;
+  animation: introFade 4s forwards;
+  z-index: 9999;
+}
+@keyframes introFade {
+  0% {opacity:1;}
+  70% {opacity:1;}
+  100% {opacity:0; visibility:hidden;}
+}
+
+/* Stars */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.6;
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+@keyframes twinkle {
+  0%,100% {opacity:0.3;}
+  50% {opacity:1;}
+}
+
+/* 3D rotating name */
+#name3d {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  font-weight: bold;
+  text-shadow: 0 0 40px red;
+  animation: spinName 9s infinite linear;
+}
+@keyframes spinName {
+  from { transform: translate(-50%, -50%) rotateY(0deg) rotateX(0deg); }
+  to { transform: translate(-50%, -50%) rotateY(360deg) rotateX(360deg); }
+}
+
+/* Floating hearts */
+.heart {
+  position: fixed;
+  bottom: -20px;
+  font-size: 30px;
+  opacity: 0.7;
+  animation: floatUp 6s linear infinite;
+}
+@keyframes floatUp {
+  0% { transform:translateY(0) translateX(0); opacity:0.5; }
+  50% { opacity:1; }
+  100% { transform:translateY(-120vh) translateX(60px); opacity:0; }
+}
+
+/* Message bubbles */
+.msg {
+  position: relative;
+  width: 85%;
+  margin: 10px auto;
+  background: rgba(255,0,0,0.12);
+  padding: 18px;
+  border-radius: 14px;
+  font-size: 24px;
+  text-align: center;
+  box-shadow: 0 0 12px #ff1a1a;
+  backdrop-filter: blur(6px);
+  transform: translateY(40px);
+  opacity: 0;
+  animation: showMsg 1.2s forwards;
+}
+@keyframes showMsg {
+  to { transform:translateY(0); opacity:1; }
+}
+
+/* Button */
+button {
+  position: fixed;
+  left: 50%;
+  bottom: 35px;
+  transform: translateX(-50%);
+  padding: 18px 45px;
+  border: none;
+  background: red;
+  color: #fff;
+  font-size: 28px;
+  font-family: "Amiri", serif;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 20px red;
+  transition: .3s;
+}
+button:hover {
+  transform: translateX(-50%) scale(1.1);
+  box-shadow: 0 0 40px #ff4b4b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Music -->
+<audio autoplay loop>
+  <source src="https://files.catbox.moe/5xgw2h.mp3" type="audio/mpeg">
+</audio>
+
+<div id="intro">N A D E E N ❤️‍🔥</div>
+
+<div id="name3d">NADEEN</div>
+
+<div id="msgBox"></div>
+
+<button onclick="explodeHearts()">سامحتك ❤️</button>
+
+<script>
+/* Stars */
+for(let i=0;i<180;i++){
+  let s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  s.style.animationDuration=(2+Math.random()*3)+"s";
+  document.body.appendChild(s);
+}
+
+/* ORIGINAL MESSAGES YOU SENT (Improved Formatting, same meaning) */
+let msgs = [
+"نادين… وجودك في حياتي مش عادي، انتي اللي بترقّق قلبي كل يوم 🥺❤️.",
+"مكسور من جوا والله… مش علشان أي حاجة، بس علشان زعلك بيوجعني بزيادة 😔💔.",
+"انتي اللي بتهدي روحي، ومفيش حد زيك… ولا نفسي يكون في ❤️‍🔥.",
+"نادين… وحشتيني بطريقة مبتحصلش مع حد، بجد 😞✨.",
+"أنا غلطت… بس والله اتغيرت، مش علشان الدنيا… لأ، علشانك انتي ❤️‍🩹.",
+"انتي مش مجرد حد… انتي القلب اللي لو بعد عني ثانية بضيع 💗.",
+"عمري ما حبيت كده… وعمري ما خوفت من الخسارة زي لما حسّيت إني ممكن أخسرك 😔🔥.",
+"ساعات ببقى ساكت… بس جوايا ألف كلمة بتنده عليك يا نادين 🥺❤️.",
+"يا رب اليوم اللي نتصالح فيه يقرب… لأني مستني اللحظة دي من قلبي 😢✨.",
+"نادين… انتي مش بس حب… انتي أمان وراحة وفرح… وانتي أول وآخر حد في بالي ❤️‍🔥."
+];
+
+let box = document.getElementById("msgBox");
+
+msgs.forEach((m, i)=>{
+  let div=document.createElement("div");
+  div.className="msg";
+  div.style.animationDelay=(i*0.7)+"s";
+  div.textContent=m;
+  box.appendChild(div);
+});
+
+/* Floating hearts */
+function heart(){
+  let h=document.createElement("div");
+  h.className="heart";
+  h.textContent="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(25+Math.random()*15)+"px";
+  h.style.animationDuration=(4+Math.random()*3)+"s";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),7000);
+}
+setInterval(heart,280);
+
+/* Explosion */
+function explodeHearts(){
+  for(let i=0;i<60;i++){
+    let h=document.createElement("div");
+    h.className="heart";
+    h.textContent="💗";
+    h.style.left="50vw";
+    h.style.bottom="50vh";
+    h.style.fontSize="35px";
+    h.style.animationDuration=(2+Math.random()*2)+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),3000);
+  }
+  alert("أحلى قرار… ❤️");
+}
+</script>
+
+</body>
+</html>
